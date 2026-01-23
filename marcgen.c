@@ -428,5 +428,17 @@ wchar_t fixed_fields[41];
 
   wprintf(L"=245  10$aTitle\n");
 
+  /*
+   * 260 Publication. Distribution
+   */
+
+  wprintf(L"=260  \\\\$aCity:$bPublisher,$c1960\n");
+  
+  /*
+   * 300 Physical Description
+   */
+
+  wprintf(L"=300  \\\\$a2 pages;$c23 cm.\n");
+
   return 0;
 }
