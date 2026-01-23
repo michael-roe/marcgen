@@ -28,7 +28,9 @@ wchar_t date1[5];
 wchar_t date2[5];
 wchar_t lang[4];
 wchar_t country[4];
+wchar_t leader[25];
 wchar_t fixed_fields[41];
+
 
   setlocale(LC_ALL, getenv("LANG"));
 
@@ -56,7 +58,142 @@ wchar_t fixed_fields[41];
    * Leader
    */
 
-  wprintf(L"=LDR\n");
+  /*
+   * 00-04 Record Length
+   *
+   * Put in zeros; MARCEdit will calculate the real length
+   */
+
+  leader[0] = '0';
+  leader[1] = '0';
+  leader[2] = '0';
+  leader[3] = '0';
+  leader[4] = '0';
+
+  /*
+   * 05 Record Status
+   *
+   * c means corrected
+   * n means new
+   */
+
+  leader[5] = 'n';
+
+  /*
+   * 06 Type of Record
+   *
+   * a means language material
+   */
+
+  leader[6] = 'a';
+
+  /*
+   * 07 Bibliographic Level
+   *
+   * m means monograph, i.e. a book
+   */
+
+  leader[7] = 'm';
+
+  /*
+   * 08 Type of Control
+   *
+   * space means unspecified
+   */
+
+  leader[8] = ' ';
+
+  /*
+   * 09 Character Encoding Scheme
+   *
+   * a means Unicode
+   */
+
+  leader[9] = 'a';
+
+  /*
+   * 10 Indicator Count
+   *
+   * Must be 2
+   */
+
+  leader[10] = '2';
+
+  /*
+   * 11 Subfield Code Count
+   *
+   * Must be 2
+   */
+
+  leader[11] = '2';
+
+  /*
+   * 12-16 Base Address of Data
+   */
+
+  leader[12] = '0';
+  leader[13] = '0';
+  leader[14] = '0';
+  leader[15] = '0';
+  leader[16] = '0';
+
+  /*
+   * 17 Encoding Level
+   *
+   * space means full level
+   */
+
+  leader[17] = ' ';
+
+  /*
+   * 18 Descriptive Cataloging Form
+   *
+   * a means AACR 2
+   */
+
+  leader[18] = 'a';
+
+  /*
+   * 19 Multipart Resource Record Level
+   *
+   * space means not specified
+   */
+
+  leader[19] = ' ';
+
+  /*
+   * 20 Length of the Length of Field Portion
+   *
+   * Must be 4
+   */
+
+  leader[20] = '4';
+
+  /*
+   * 21 Length of the Starting Character Position
+   *
+   * Must be 5
+   */
+
+  leader[21] = '5';
+
+  /*
+   * 22 Length of the Implementation Defined Portion
+   */
+
+  leader[22] = '0';
+
+  /*
+   * 23 Undefined
+   *
+   * Must be 0
+   */
+
+  leader[23] = '0';
+   
+  leader[25] = 0;
+
+  wprintf(L"=LDR  %ls\n", leader);
 
   /*
    * 001 Control Number
@@ -261,6 +398,35 @@ wchar_t fixed_fields[41];
   fixed_fields[40] = 0;
 
   wprintf(L"=008  %ls\n", fixed_fields);
+
+
+  /*
+   * 040 Cataloging Source
+   *
+   * Who created and transcribed this cataog record.
+   *
+   * Value can be a MARC organization code or an OCLC "Symbol".
+   *
+   * INARC is the OCLC Symbol for The Internet Archive.
+   */
+
+  wprintf(L"=040  \\\\$a%ls$c%ls\n", L"INARC", L"INARC");
+
+  /*
+   * 100 Main Entry -- Personal Name
+   *
+   * First indicator 1 denotes surname
+   */
+
+  wprintf(L"=100  1\\$aSmith, John\n");
+
+  /*
+   * 245 Title Statement
+   *
+   * First indicator is 1 for "added entry"
+   */
+
+  wprintf(L"=245  10$aTitle\n");
 
   return 0;
 }
