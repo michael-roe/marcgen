@@ -5,6 +5,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <getopt.h>
+#include <string.h>
 
 /*
  * Generate a simple MARC record.
@@ -37,13 +38,29 @@ int opt;
 
   d1 = 1960;
   d2 = 0;
+  wcpncpy(lang, L"eng", sizeof(lang)/sizeof(wchar_t) - 1);
+  lang[3] = 0;
 
-  while ((opt = getopt(argc, argv, "d:D:")) != -1)
+  while ((opt = getopt(argc, argv, "d:l:D:")) != -1)
   {
     switch (opt)
     {
       case 'd':
         d1 = strtol(optarg, NULL, 10);
+        break;
+      case 'l':
+        if (strlen(optarg) > 3)
+        {
+          fprintf(stderr, "Language name must be at most 3 characters\n");
+          return -1;
+        }
+        swprintf(lang, sizeof(lang)/sizeof(wchar_t), L"%s", optarg);
+        lang[3] = 0;
+        if (lang[2] == 0)
+        {
+          lang[2] = ' ';
+        }
+        wprintf(L"lang = %ls\n", lang);
         break;
       case 'D':
         d2 = strtol(optarg, NULL, 10);
@@ -66,8 +83,6 @@ int opt;
   }
   date2[4] = 0;
 
-  wcpncpy(lang, L"eng", sizeof(lang)/sizeof(wchar_t) - 1);
-  lang[3] = 0;
   wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
   country[3] = 0;
 
@@ -208,7 +223,7 @@ int opt;
 
   leader[23] = '0';
    
-  leader[25] = 0;
+  leader[24] = 0;
 
   wprintf(L"=LDR  %ls\n", leader);
 
@@ -394,7 +409,7 @@ int opt;
    * 008/35-37 Language
    */
 
-  swprintf(fixed_fields + 35, 4, lang);
+  swprintf(fixed_fields + 35, 4, L"%ls", lang);
 
   /*
    * 008/38 Modified Record
