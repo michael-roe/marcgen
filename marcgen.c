@@ -24,6 +24,19 @@
 #define DATE_SINGLE 0
 #define DATE_REPRINT 1
 
+/*
+ * Valid Genre and Form terms that correspond to flags in the 008 header
+ *
+ * Poetry
+ * Drama
+ * Fiction
+ * Short stories
+ * Autobiographies
+ * Biographies
+ * Festschriften
+ * Conference papers and proceedings
+ */
+
 int main(int argc, char **argv)
 {
 struct timeval tv;
