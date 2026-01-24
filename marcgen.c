@@ -4,6 +4,7 @@
 #include <locale.h>
 #include <time.h>
 #include <sys/time.h>
+#include <getopt.h>
 
 /*
  * Generate a simple MARC record.
@@ -30,15 +31,31 @@ wchar_t lang[4];
 wchar_t country[4];
 wchar_t leader[25];
 wchar_t fixed_fields[41];
-
+int opt;
 
   setlocale(LC_ALL, getenv("LANG"));
 
   d1 = 1960;
+  d2 = 0;
+
+  while ((opt = getopt(argc, argv, "d:D:")) != -1)
+  {
+    switch (opt)
+    {
+      case 'd':
+        d1 = strtol(optarg, NULL, 10);
+        break;
+      case 'D':
+        d2 = strtol(optarg, NULL, 10);
+        break;
+      default:
+        break;
+    }
+  }
+
   swprintf(date1, 5, L"%04d", d1);
   date1[4] = 0;
 
-  d2 = 0;
   if (d2 == 0)
   {
     swprintf(date2, 5, L"    ");
@@ -432,7 +449,7 @@ wchar_t fixed_fields[41];
    * 260 Publication. Distribution
    */
 
-  wprintf(L"=260  \\\\$aCity:$bPublisher,$c1960\n");
+  wprintf(L"=260  \\\\$aCity:$bPublisher,$c%d\n", d1);
   
   /*
    * 300 Physical Description
