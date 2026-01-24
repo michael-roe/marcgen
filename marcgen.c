@@ -41,7 +41,10 @@ int opt;
   wcpncpy(lang, L"eng", sizeof(lang)/sizeof(wchar_t) - 1);
   lang[3] = 0;
 
-  while ((opt = getopt(argc, argv, "d:l:D:")) != -1)
+  wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
+  country[3] = 0;
+
+  while ((opt = getopt(argc, argv, "d:l:p:D:")) != -1)
   {
     switch (opt)
     {
@@ -60,7 +63,15 @@ int opt;
         {
           lang[2] = ' ';
         }
-        wprintf(L"lang = %ls\n", lang);
+        break;
+      case 'p':
+        if (strlen(optarg) > 3)
+        {
+          fprintf(stderr, "Place name must be at most 3 characters\n");
+          return -1;
+        }
+        swprintf(country, sizeof(country)/sizeof(wchar_t), L"%s", optarg);
+        country[3] = 0;
         break;
       case 'D':
         d2 = strtol(optarg, NULL, 10);
@@ -82,9 +93,6 @@ int opt;
     swprintf(date2, 5, L"%04d", d2);
   }
   date2[4] = 0;
-
-  wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
-  country[3] = 0;
 
   /*
    * Leader
