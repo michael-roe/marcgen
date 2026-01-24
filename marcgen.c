@@ -19,6 +19,11 @@
  *
  */
  
+/* Different types of date that can be in an 008 field */
+
+#define DATE_SINGLE 0
+#define DATE_REPRINT 1
+
 int main(int argc, char **argv)
 {
 struct timeval tv;
@@ -33,8 +38,11 @@ wchar_t country[4];
 wchar_t leader[25];
 wchar_t fixed_fields[41];
 int opt;
+int date_type;
 
   setlocale(LC_ALL, getenv("LANG"));
+
+  date_type = DATE_SINGLE;
 
   d1 = 1960;
   d2 = 0;
@@ -44,7 +52,7 @@ int opt;
   wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
   country[3] = 0;
 
-  while ((opt = getopt(argc, argv, "d:l:p:D:")) != -1)
+  while ((opt = getopt(argc, argv, "d:l:p:rD:")) != -1)
   {
     switch (opt)
     {
@@ -73,6 +81,9 @@ int opt;
         swprintf(country, sizeof(country)/sizeof(wchar_t), L"%s", optarg);
         country[3] = 0;
         break;
+      case 'r':
+        date_type = DATE_REPRINT;
+        break;
       case 'D':
         d2 = strtol(optarg, NULL, 10);
         break;
@@ -80,6 +91,9 @@ int opt;
         break;
     }
   }
+
+  if (date_type == DATE_REPRINT)
+    wprintf(L"reprint\n");
 
   swprintf(date1, 5, L"%04d", d1);
   date1[4] = 0;
@@ -289,7 +303,18 @@ int opt;
    * 008/06 Type of Publication Date
    */
 
-  fixed_fields[6] = 's';
+  switch (date_type)
+  {
+    case DATE_SINGLE:
+      fixed_fields[6] = 's';
+      break;
+    case DATE_REPRINT:
+      fixed_fields[6] = 'r';
+      break;
+    default:
+      fwprintf(stderr, L"Invalid date format\n");
+      return -1;
+  }
 
   /*
    * 008/07-10 Date 1
