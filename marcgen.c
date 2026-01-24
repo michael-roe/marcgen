@@ -266,7 +266,7 @@ int opt;
   timeptr = gmtime(&now);
   wprintf(L"=005  %d%02d%02d%02d%02d%02d.0\n",
     timeptr->tm_year + 1900,
-    timeptr -> tm_mon,
+    timeptr -> tm_mon + 1,
     timeptr->tm_mday,
     timeptr->tm_hour,
     timeptr->tm_min,
