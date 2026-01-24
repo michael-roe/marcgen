@@ -35,6 +35,7 @@ wchar_t date1[5];
 wchar_t date2[5];
 wchar_t lang[4];
 wchar_t country[4];
+wchar_t lit_form[32];
 wchar_t leader[25];
 wchar_t fixed_fields[41];
 int opt;
@@ -52,12 +53,17 @@ int date_type;
   wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
   country[3] = 0;
 
-  while ((opt = getopt(argc, argv, "d:l:p:rD:")) != -1)
+  lit_form[0] = 0;
+
+  while ((opt = getopt(argc, argv, "d:f:l:p:rD:")) != -1)
   {
     switch (opt)
     {
       case 'd':
         d1 = strtol(optarg, NULL, 10);
+        break;
+      case 'f':
+        swprintf(lit_form, sizeof(lit_form)/sizeof(wchar_t), L"%s", optarg);
         break;
       case 'l':
         if (strlen(optarg) > 3)
@@ -91,9 +97,6 @@ int date_type;
         break;
     }
   }
-
-  if (date_type == DATE_REPRINT)
-    wprintf(L"reprint\n");
 
   swprintf(date1, 5, L"%04d", d1);
   date1[4] = 0;
@@ -504,6 +507,15 @@ int date_type;
    */
 
   wprintf(L"=300  \\\\$a2 pages;$c23 cm.\n");
+
+  /*
+   * 655 Index Term -- Genre/Form
+   */
+
+  if (lit_form[0])
+  {
+    wprintf(L"=655 \7$a%ls$2lcgft\n", lit_form);
+  }
 
   return 0;
 }
