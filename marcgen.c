@@ -61,6 +61,17 @@
  * Biographies
  * Festschriften
  * Conference papers and proceedings
+ *
+ * Some genres can be written is several different forms, in which case
+ * the Genre and Form field might need to have two values, one for the genre
+ * and one for the form.
+ *
+ * For example, the genre "Travel writing" includes:
+ * Autobiographies (of explorers)
+ * Diaries (of expeditions)
+ * Essays (about travel)
+ * Personal correspondence (letters from abroad)
+ * Creative nonfiction
  */
 
 int main(int argc, char **argv)
