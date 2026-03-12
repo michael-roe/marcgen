@@ -57,6 +57,7 @@
  * Drama
  * Fiction
  * Short stories
+ * Personal correspondence
  * Autobiographies
  * Biographies
  * Festschriften
@@ -479,7 +480,14 @@ int i;
    * 0 means not a festschrift
    */
 
-  fixed_fields[30] = '0';
+  if (form_contains(L"Festschriften"))
+  {
+    fixed_fields[30] = '1';
+  }
+  else
+  {
+    fixed_fields[30] = '0';
+  }
 
   /*
    * 008/31 Index
@@ -503,7 +511,19 @@ int i;
    * p means poetry
    */
 
-  if (form_contains(L"Poetry"))
+  if (form_contains(L"Drama"))
+  {
+    fixed_fields[33] = 'd';
+  }
+  else if (form_contains(L"Personal correspondence"))
+  {
+    fixed_fields[33] = 'i';
+  }
+  else if (form_contains(L"Short stories"))
+  {
+    fixed_fields[33] = 'j';
+  }
+  else if (form_contains(L"Poetry"))
   {
     fixed_fields[33] = 'p';
   }
