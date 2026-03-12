@@ -74,6 +74,10 @@
  * Creative nonfiction
  */
 
+#define GENRE_MAX 2
+#define GENRE_MAX_LEN 80
+static wchar_t lit_form[GENRE_MAX][GENRE_MAX_LEN];
+
 int main(int argc, char **argv)
 {
 struct timeval tv;
@@ -85,13 +89,16 @@ wchar_t date1[5];
 wchar_t date2[5];
 wchar_t lang[4];
 wchar_t country[4];
-wchar_t lit_form[32];
 wchar_t leader[25];
 wchar_t fixed_fields[41];
 int opt;
 int date_type;
+int genre_count;
+int i;
 
   setlocale(LC_ALL, getenv("LANG"));
+
+  genre_count = 0;
 
   date_type = DATE_SINGLE;
 
@@ -103,8 +110,6 @@ int date_type;
   wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
   country[3] = 0;
 
-  lit_form[0] = 0;
-
   while ((opt = getopt(argc, argv, "d:f:l:p:rD:")) != -1)
   {
     switch (opt)
@@ -113,7 +118,11 @@ int date_type;
         d1 = strtol(optarg, NULL, 10);
         break;
       case 'f':
-        swprintf(lit_form, sizeof(lit_form)/sizeof(wchar_t), L"%s", optarg);
+        if (genre_count < GENRE_MAX)
+        {
+          swprintf(lit_form[genre_count], 80, L"%s", optarg);
+          genre_count++;
+        }
         break;
       case 'l':
         if (strlen(optarg) > 3)
@@ -562,9 +571,12 @@ int date_type;
    * 655 Index Term -- Genre/Form
    */
 
-  if (lit_form[0])
+  if (genre_count > 0)
   {
-    wprintf(L"=655 \7$a%ls$2lcgft\n", lit_form);
+    for (i=0; i<genre_count; i++)
+    {
+      wprintf(L"=655  \\7$a%ls$2lcgft\n", lit_form[i]);
+    }
   }
 
   return 0;
