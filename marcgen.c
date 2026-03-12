@@ -78,6 +78,22 @@
 #define GENRE_MAX_LEN 80
 static wchar_t lit_form[GENRE_MAX][GENRE_MAX_LEN];
 
+static int genre_count = 0;
+
+static int form_contains(wchar_t *s)
+{
+int i;
+
+  for (i=0; i<genre_count; i++)
+  {
+    if (wcscmp(lit_form[i], s) == 0)
+    {
+      return 1;
+    }
+  }
+  return 0;
+}
+
 int main(int argc, char **argv)
 {
 struct timeval tv;
@@ -93,7 +109,6 @@ wchar_t leader[25];
 wchar_t fixed_fields[41];
 int opt;
 int date_type;
-int genre_count;
 int i;
 
   setlocale(LC_ALL, getenv("LANG"));
@@ -488,7 +503,14 @@ int i;
    * p means poetry
    */
 
-  fixed_fields[33] = '0';
+  if (form_contains(L"Poetry"))
+  {
+    fixed_fields[33] = 'p';
+  }
+  else
+  {
+    fixed_fields[33] = '0';
+  }
 
   /*
    * 008/34 Biography
@@ -498,7 +520,18 @@ int i;
    * b means individual biography
    */
 
-  fixed_fields[34] = ' ';
+  if (form_contains(L"Autobiographies"))
+  {
+    fixed_fields[34] = 'a';
+  }
+  else if (form_contains(L"Biographies"))
+  {
+    fixed_fields[34] = 'b';
+  }
+  else
+  {
+    fixed_fields[34] = ' ';
+  }
 
   /*
    * 008/35-37 Language
