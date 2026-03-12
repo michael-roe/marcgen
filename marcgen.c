@@ -55,8 +55,10 @@
  *
  * Poetry
  * Drama
+ * Essays
  * Fiction
  * Short stories
+ * Speeches
  * Personal correspondence
  * Autobiographies
  * Biographies
@@ -515,6 +517,10 @@ int i;
   {
     fixed_fields[33] = 'd';
   }
+  else if (form_contains(L"Essays"))
+  {
+    fixed_fields[33] = 'e';
+  }
   else if (form_contains(L"Personal correspondence"))
   {
     fixed_fields[33] = 'i';
@@ -526,6 +532,10 @@ int i;
   else if (form_contains(L"Poetry"))
   {
     fixed_fields[33] = 'p';
+  }
+  else if (form_contains(L"Speeches"))
+  {
+    fixed_fields[33] = 's';
   }
   else
   {
