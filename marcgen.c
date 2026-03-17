@@ -110,6 +110,7 @@ wchar_t lang[4];
 wchar_t country[4];
 wchar_t leader[25];
 wchar_t fixed_fields[41];
+wchar_t worldcat[12];
 int opt;
 int date_type;
 int i;
@@ -128,7 +129,9 @@ int i;
   wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
   country[3] = 0;
 
-  while ((opt = getopt(argc, argv, "d:f:l:p:rD:")) != -1)
+  worldcat[0] = 0;
+
+  while ((opt = getopt(argc, argv, "d:f:l:p:rw:D:")) != -1)
   {
     switch (opt)
     {
@@ -166,6 +169,10 @@ int i;
         break;
       case 'r':
         date_type = DATE_REPRINT;
+        break;
+      case 'w':
+        swprintf(worldcat, sizeof(worldcat)/sizeof(wchar_t), L"%s", optarg);
+        fwprintf(stderr, L"worldcat = %ls\n", worldcat);
         break;
       case 'D':
         d2 = strtol(optarg, NULL, 10);
@@ -589,6 +596,17 @@ int i;
 
   wprintf(L"=008  %ls\n", fixed_fields);
 
+
+  /*
+   * 035 System Control Number
+   *
+   * An identifier for the book in another catalog (e.g. worldcat)
+   */
+
+  if (worldcat[0])
+  {
+    wprintf(L"=035  \\\\$a(OCoLC)%ls\n", worldcat);
+  }
 
   /*
    * 040 Cataloging Source
