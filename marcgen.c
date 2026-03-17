@@ -106,7 +106,10 @@ int d1;
 int d2;
 wchar_t date1[5];
 wchar_t date2[5];
-wchar_t lang[4];
+#define LANG_MAX 3
+#define LANG_MAX_LEN 4
+wchar_t lang[LANG_MAX][LANG_MAX_LEN];
+int lang_count;
 wchar_t country[4];
 wchar_t leader[25];
 wchar_t fixed_fields[41];
@@ -117,14 +120,13 @@ int i;
 
   setlocale(LC_ALL, getenv("LANG"));
 
+  lang_count = 0;
   genre_count = 0;
 
   date_type = DATE_SINGLE;
 
   d1 = 1960;
   d2 = 0;
-  wcpncpy(lang, L"eng", sizeof(lang)/sizeof(wchar_t) - 1);
-  lang[3] = 0;
 
   wcpncpy(country, L"enk", sizeof(country)/sizeof(wchar_t) - 1);
   country[3] = 0;
@@ -151,11 +153,18 @@ int i;
           fprintf(stderr, "Language name must be at most 3 characters\n");
           return -1;
         }
-        swprintf(lang, sizeof(lang)/sizeof(wchar_t), L"%s", optarg);
-        lang[3] = 0;
-        if (lang[2] == 0)
+        if (lang_count < LANG_MAX)
         {
-          lang[2] = ' ';
+          swprintf(lang[lang_count],
+            LANG_MAX_LEN,
+            L"%s",
+            optarg);
+          lang[lang_count][LANG_MAX_LEN - 1] = 0;
+          if (lang[lang_count][2] == 0)
+          {
+            lang[lang_count][2] = ' ';
+          }
+          lang_count++;
         }
         break;
       case 'p':
@@ -180,6 +189,13 @@ int i;
       default:
         break;
     }
+  }
+
+  if (lang_count == 0)
+  {
+    wcpncpy(lang[0], L"eng", LANG_MAX_LEN - 1);
+    lang[0][LANG_MAX_LEN - 1] = 0;
+    lang_count++;
   }
 
   swprintf(date1, 5, L"%04d", d1);
@@ -581,7 +597,7 @@ int i;
    * 008/35-37 Language
    */
 
-  swprintf(fixed_fields + 35, 4, L"%ls", lang);
+  swprintf(fixed_fields + 35, 4, L"%ls", lang[0]);
 
   /*
    * 008/38 Modified Record
@@ -626,6 +642,20 @@ int i;
    */
 
   wprintf(L"=040  \\\\$a%ls$c%ls\n", L"INARC", L"INARC");
+
+  /*
+   * 041 Language Code
+   */
+
+  if (lang_count > 1)
+  {
+    wprintf(L"=041  \\\\");
+    for (i=0; i<lang_count; i++)
+    {
+      wprintf(L"$a%ls", lang[i]);
+    }
+    wprintf(L"\n");
+  }
 
   /*
    * 100 Main Entry -- Personal Name
