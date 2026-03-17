@@ -481,7 +481,14 @@ int i;
    * 0 means not a conference publication
    */
 
-  fixed_fields[29] = '0';
+  if (form_contains(L"Conference papers and proceedings"))
+  {
+    fixed_fields[29] = '1';
+  }
+  else
+  {
+    fixed_fields[29] = '0';
+  }
 
   /*
    * 008/30 Festschrift
